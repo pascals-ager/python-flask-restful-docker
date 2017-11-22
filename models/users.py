@@ -7,5 +7,5 @@ class User(db.Model):
 	email = db.Column(db.String(50), unique=True, nullable=False)
 	password = db.Column(db.String(80), nullable=False)
 	created_on = db.Column(db.DateTime, default=datetime.utcnow(), nullable=False)
-	confirmed = db.Column(db.Boolean, default=False)
+	confirmed = db.Column(db.SmallInteger, default=0)
 	confirmed_on = db.Column(db.DateTime, nullable=True)

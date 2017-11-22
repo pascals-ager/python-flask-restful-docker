@@ -10,9 +10,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 from models import User
 import config
-def create_app():
+def create_app(config_name):
+    config_object = ".".join(('config',config_name))
     app = Flask(__name__)
-    app.config.from_object(config.DevelopmentConfig)
+    app.config.from_object(config_object)
     #import apis.views
     from extensions import db
     db.init_app(app)
@@ -42,6 +43,6 @@ def create_app():
 
 
 if __name__=='__main__':    
-    app=create_app()
+    app = create_app(os.environ['ENV_SETTINGS'])
 
     app.run(debug=True)

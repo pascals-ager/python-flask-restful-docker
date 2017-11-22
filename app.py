@@ -21,9 +21,6 @@ def create_app(config_name):
     app.register_blueprint(registerApi)    
     app.register_blueprint(signApi)
     app.register_blueprint(serviceApi)
-    with app.app_context():
-        db.create_all()
-    
     return app
 
 

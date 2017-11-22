@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, current_app
 from flask_restful import Api, Resource
 import jwt
 
@@ -14,6 +14,7 @@ api_wrap = Api(api)
 
 @api.route("/sign",  methods=['GET'])
 def sign():
+    SECRET_KEY = current_app.config['SECRET_KEY']
     email = request.headers.get('email')
     password = request.headers.get('password')
     user = User.query.filter_by(email=email).scalar()
@@ -26,5 +27,5 @@ def sign():
     else:
         token = jwt.encode({'public_id' : user.email,
          'exp' : datetime.utcnow() + timedelta(minutes=30)},
-          'thisisdevsecret')   #secret key
+          SECRET_KEY)   #secret key
         return jsonify({'token' : token.decode('UTF-8')})

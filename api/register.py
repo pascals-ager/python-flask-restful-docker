@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, url_for
+from flask import Blueprint, request, url_for, current_app
 from flask_restful import Api, Resource
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,6 +17,7 @@ api_wrap = Api(api)
 def signup():
     email = request.headers.get('email')
     password = request.headers.get('password')
+    SALT_KEY = current_app.config['SALT_KEY']
     user = User.query.filter_by(email=email).scalar()
     if user and user.confirmed_on:
         return "The user already exists. Please sign in to use the APIs."
@@ -27,7 +28,7 @@ def signup():
     new_user = User(email=email, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
-    token = ts.dumps(email, salt="thisisdevsecret")  #secret key
+    token = ts.dumps(email, salt=SALT_KEY)  #salt key
 
     confirm_url = url_for(
         'register.confirm',
@@ -37,11 +38,11 @@ def signup():
 
 @api.route("/confirm/<token>",  methods=['GET'])
 def confirm(token):
-    print(token)
-    email = ts.loads(token, salt="thisisdevsecret", max_age=86400)  #secret key
+    SALT_KEY = current_app.config['SALT_KEY']
+    email = ts.loads(token, salt=SALT_KEY, max_age=86400)  #salt key
     user = User.query.filter_by(email=email).first_or_404()
     user.confirmed=1
     user.confirmed_on=datetime.utcnow()
     db.session.merge(user)
     db.session.commit()
-    return "User "+email+" is now confirmed. You may sign-in to use the APIs."
+    return "User "+ email +" is now confirmed. You may sign-in to use the APIs."

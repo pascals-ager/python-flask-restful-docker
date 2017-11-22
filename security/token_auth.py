@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from models import User
 import jwt
 
@@ -7,6 +7,7 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
+        SECRET_KEY = current_app.config['SECRET_KEY']
 
         if 'Authorization' in request.headers:
             #print(request.headers)
@@ -18,7 +19,7 @@ def token_required(f):
             return jsonify({'message' : 'Token is missing!'}), 401
 
         try: 
-            data = jwt.decode(token, 'thisisdevsecret')
+            data = jwt.decode(token, SECRET_KEY) #secret key
             #print(data)
             current_user = User.query.filter_by(email=data['public_id']).scalar()
         except Exception as e:

@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, url_for, current_app
+from flask import Blueprint, request, url_for, current_app, jsonify, make_response
 from flask_restful import Api, Resource
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -18,11 +18,16 @@ def signup():
     email = request.headers.get('email')
     password = request.headers.get('password')
     SALT_KEY = current_app.config['SALT_KEY']
-    user = User.query.filter_by(email=email).scalar()
+
+    try:
+        user = User.query.filter_by(email=email).scalar()
+    except Exception as e:
+        return make_response(str(e).split('\n')[0], 401, {'WWW-Authenticate' : 'Issue occured while querying the database'})
+    
     if user and user.confirmed_on:
-        return "The user already exists. Please sign in to use the APIs."
+        return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="The email is already in use"'})
     elif user and not user.confirmed_on:
-        return "The user already exists. Please confirm your email and sign-in."
+        return make_response('Could not verify', 401, {'WWW-Authenticate' : 'Basic realm="The email is registered but is unconfirmed"'})
     hashed_password = generate_password_hash(password, method='sha256')
     
     new_user = User(email=email, password=hashed_password)
@@ -34,9 +39,9 @@ def signup():
         'register.confirm',
         token=token,
         _external=True)
-    return confirm_url
+    return jsonify({'confirmation_url': confirm_url})
 
-@api.route("/confirm/<token>",  methods=['GET'])
+@api.route("/confirm/<token>",  methods=['POST'])
 def confirm(token):
     SALT_KEY = current_app.config['SALT_KEY']
     email = ts.loads(token, salt=SALT_KEY, max_age=86400)  #salt key
@@ -45,4 +50,4 @@ def confirm(token):
     user.confirmed_on=datetime.utcnow()
     db.session.merge(user)
     db.session.commit()
-    return "User "+ email +" is now confirmed. You may sign-in to use the APIs."
+    return jsonify({'confirmation_message': 'User '+ email +' is confirmed'})

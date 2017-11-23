@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from flask import Flask, current_app
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from models import User
@@ -18,7 +18,7 @@ def create_app(config_name):
 
     
     db.init_app(app)
-
+    #init_db(app)
     
     app.register_blueprint(registerApi)    
     app.register_blueprint(signApi)
@@ -27,8 +27,8 @@ def create_app(config_name):
     return app
 
 
-def init_db():
-    with current_app.context():
+def init_db(current_app):
+    with current_app.app_context():
         db.create_all()
 
 
@@ -36,5 +36,5 @@ def init_db():
 
 if __name__=='__main__':    
     app = create_app(os.environ['ENV_SETTINGS'])
-
+    
     app.run(debug=True)

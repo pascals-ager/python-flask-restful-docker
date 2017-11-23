@@ -27,5 +27,6 @@ def sign():
     else:
         token = jwt.encode({'public_id' : user.email,
          'exp' : datetime.utcnow() + timedelta(minutes=30)},
-          SECRET_KEY)   #secret key
+          SECRET_KEY,
+          algorithm='HS256')   #secret key
         return jsonify({'token' : token.decode('UTF-8')})

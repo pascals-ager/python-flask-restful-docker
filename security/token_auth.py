@@ -19,7 +19,7 @@ def token_required(f):
             return jsonify({'message' : 'Token is missing!'}), 401
 
         try: 
-            data = jwt.decode(token, SECRET_KEY) #secret key
+            data = jwt.decode(token, SECRET_KEY,algorithms='HS256') #secret key
             #print(data)
             current_user = User.query.filter_by(email=data['public_id']).scalar()
         except Exception as e:

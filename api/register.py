@@ -41,7 +41,7 @@ def signup():
         _external=True)
     return jsonify({'confirmation_url': confirm_url})
 
-@api.route("/confirm/<token>",  methods=['POST'])
+@api.route("/confirm/<token>",  methods=['GET'])
 def confirm(token):
     SALT_KEY = current_app.config['SALT_KEY']
     email = ts.loads(token, salt=SALT_KEY, max_age=86400)  #salt key

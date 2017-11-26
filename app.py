@@ -18,7 +18,7 @@ def create_app(config_name):
 
     
     db.init_app(app)
-    #init_db(app)
+    init_db(app)
     
     app.register_blueprint(registerApi)    
     app.register_blueprint(signApi)
@@ -35,6 +35,6 @@ def init_db(current_app):
 
 
 if __name__=='__main__':    
-    app = create_app(os.environ['ENV_SETTINGS'])
+    app = create_app('DevelopmentConfig')  # os.environ['ENV_SETTINGS']; export ENV_SETTINGS='DevelopmentConfig'
     
     app.run(debug=True)

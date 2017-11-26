@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -qq -y build-essential libpq-dev postgresq
 
 ENV INSTALL_PATH /home/vimcar
 
+ENV ENV_SETTINGS 'TestConfig'
+
 RUN mkdir -p $INSTALL_PATH
 
 WORKDIR $INSTALL_PATH

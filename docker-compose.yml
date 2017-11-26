@@ -5,7 +5,7 @@ services:
   vimcar:
     restart: always
     build: .
-    command: gunicorn -b 0.0.0.0:8000 --reload --access-logfile - "app:create_app('TestConfig')"
+    command: gunicorn -b 0.0.0.0:8000 --reload --access-logfile - "app:create_app(os.environ['ENV_SETTINGS'])"
     depends_on:
       postgres_db:
         condition: service_healthy 

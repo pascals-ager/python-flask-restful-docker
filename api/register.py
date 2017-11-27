@@ -15,6 +15,13 @@ api_wrap = Api(api)
 
 @api.route("/signup",  methods=['POST'])
 def signup():
+    '''
+    In  - Request header with user email and password
+    Out - Confirmation link for user activation
+
+    The confirmation link consists of a serialized token which is used to identify the user
+    '''
+
     email = request.headers.get('email')
     password = request.headers.get('password')
     SALT_KEY = current_app.config['SALT_KEY']
@@ -43,6 +50,11 @@ def signup():
 
 @api.route("/confirm/<token>",  methods=['GET'])
 def confirm(token):
+    '''
+    In - Request with token parameter
+    Out- User activation message
+
+    '''
     SALT_KEY = current_app.config['SALT_KEY']
     email = ts.loads(token, salt=SALT_KEY, max_age=86400)  #salt key
     user = User.query.filter_by(email=email).first_or_404()

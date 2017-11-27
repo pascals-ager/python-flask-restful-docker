@@ -11,4 +11,9 @@ api_wrap = Api(api)
 @api.route("/service",  methods=['GET'])
 @token_required
 def service(current_user):
+    '''
+    In - A request header containing a valid jwt token
+    The service can be accessed only if the token is valid
+
+    '''
     return make_response(current_user.email + ' is accessing a protected service', 200)

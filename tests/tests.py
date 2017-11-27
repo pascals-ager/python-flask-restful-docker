@@ -1,6 +1,6 @@
 import unittest
 from flask_testing import TestCase
-from . import app, db
+from . import app, db, create_app
 import json
 
 class TestConfig(TestCase):
@@ -13,12 +13,12 @@ class TestConfig(TestCase):
 
     def tearDown(self):
         pass
-
+        
     def test_config_loading(self):
         self.assertFalse(app.config['DEBUG'])
         self.assertFalse(app.config['SQLALCHEMY_TRACK_MODIFICATIONS'])
         self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:vimcar@127.0.0.1:5432/vimcartest')
+            app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:vimcar@postgres_db/vimcartest')
 
 
 class TestRegister(TestConfig):     
@@ -34,7 +34,7 @@ class TestRegister(TestConfig):
 class TestConfirm(TestRegister):
     def _test_confirm(self,header):
         confirm_url = self._test_register(header)
-        response = self.client.post(confirm_url, follow_redirects=True)
+        response = self.client.get(confirm_url, follow_redirects=True)
         self.assert200(response)
         reply = response.json
         self.assertTrue("confirmation_message" in reply)        

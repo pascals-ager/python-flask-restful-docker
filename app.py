@@ -12,11 +12,18 @@ from api import registerApi,signApi,serviceApi
 
 
 def create_app(config_name):
+
+    '''
+    This is the application factory which returns the flask app object.
+    The config_name directs a runtime configuration load.
+    '''
     config_object = ".".join(('config',config_name))
     app = Flask(__name__)
     app.config.from_object(config_object)
 
-    
+    '''
+    initialize the db and register the modularized services to the app.
+    '''
     db.init_app(app)
     init_db(app)
     
@@ -33,8 +40,8 @@ def init_db(current_app):
 
 
 
-
+'''
 if __name__=='__main__':    
     app = create_app('DevelopmentConfig')  # os.environ['ENV_SETTINGS']; export ENV_SETTINGS='DevelopmentConfig'
     
-    app.run(debug=True)
+    app.run(debug=True)'''

@@ -6,6 +6,11 @@ import jwt
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        '''
+        The decorator provides a mechanism to validate the jwt token within a requested service
+        In the abscence of a valid token, the decoratee service may not be accessed
+
+        '''
         token = None
         SECRET_KEY = current_app.config['SECRET_KEY']
 

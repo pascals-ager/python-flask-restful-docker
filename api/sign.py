@@ -14,6 +14,11 @@ api_wrap = Api(api)
 
 @api.route("/sign",  methods=['GET'])
 def sign():
+    '''
+    In - Request header with user email and password
+    Out - A jwt token is sent if the user is active, else an appropriate error message is sent.
+    
+    '''
     SECRET_KEY = current_app.config['SECRET_KEY']
     email = request.headers.get('email')
     password = request.headers.get('password')

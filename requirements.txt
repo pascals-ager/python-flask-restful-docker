@@ -25,4 +25,4 @@ six==1.11.0
 SQLAlchemy==1.1.15
 Werkzeug==0.12.2
 wrapt==1.10.11
-gunicorn==19.3.0
+gunicorn==19.5.0

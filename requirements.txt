@@ -3,7 +3,7 @@ astroid==1.5.3
 cffi==1.11.2
 click==6.7
 cryptography==1.7.2
-Flask==0.12.2
+Flask==0.12.3
 Flask-RESTful==0.3.6
 Flask-SQLAlchemy==2.3.2
 Flask-Testing==0.6.2
